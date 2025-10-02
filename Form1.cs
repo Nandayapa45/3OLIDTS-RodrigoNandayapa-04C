@@ -135,7 +135,7 @@ namespace _3OLIDTS_RodrigoNandayapa_04
         private bool EsTextoValido(string texto)
         {
 
-            return Regex.IsMatch(texto, @"^{[A-Za-z\\s]+$");
+            return Regex.IsMatch(texto, @"^[A-Za-z\s]+$");
         }
 
         private void label1_Click(object sender, EventArgs e)
