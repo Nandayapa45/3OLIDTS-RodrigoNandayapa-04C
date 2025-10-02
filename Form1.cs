@@ -22,40 +22,84 @@ namespace _3OLIDTS_RodrigoNandayapa_04
             tbApellidos.TextChanged += validarApellidos;
             tbEstatura.TextChanged += validarEstatura;
             tbEdad.TextChanged += validarEdad;
-            tbTelefono.Leave += validarTelefono; 
+            tbTelefono.Leave += validarTelefono;
 
         }
         private void validarNombre(object sender, EventArgs e)
         {
-            TextBox textbox = (TextBox) sender;
+            TextBox textbox = (TextBox)sender;
             if (!EsTextoValido(textbox.Text))
             {
-                MessageBox.Show ("Ingrese valores correctos para el nombre", "Error" , MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Ingrese valores correctos para el nombre", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                textbox.Clear();
             }
 
         }
         private void validarEdad(object sender, EventArgs e)
         {
-
+            TextBox textbox = (TextBox)sender;
+            if (!EdadValida(textbox.Text))
+            {
+                MessageBox.Show("Ingrese un valor entero valido para la edad",
+                "Error Edad", MessageBoxButtons.YesNo,
+                MessageBoxIcon.Error);
+                //textbox.Clear();
+            }
 
         }
+        private bool EdadValida(string valor)
+        {
+            int resultado;
+            return int.TryParse(valor, out resultado);
+            //return false;
+        }
+
         private void validarApellidos(object sender, EventArgs e)
         {
-
+            TextBox textbox = (TextBox)sender;
+            if (!EsTextoValido(textbox.Text))
+            {
+                MessageBox.Show("Por favor ingrese valores correctos para el apellidos", "Error Nombre", MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+                textbox.Clear();
+            }
 
         }
         private void validarTelefono(object sender, EventArgs e)
         {
+            TextBox textbox = (TextBox)sender;
+            if (textbox.Text.Length == 10 && EsEnteroValido10Digitos
+            (textbox.Text))
+            {
+                textbox.BackColor = Color.Green;
+            }
+            else
+            {
+                textbox.BackColor = Color.Red;
+                MessageBox.Show("Ingrese un telefono de 10 digitos", "Error telefono",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //textbox.Clear();
+            }
 
-
+        }
+        private bool EstaturaValida(string valor)
+        {
+            decimal resultado;
+            return decimal.TryParse(valor, out resultado);
+            //return false;
         }
         private void validarEstatura(object sender, EventArgs e)
         {
-
+            TextBox textbox = (TextBox)sender;
+            if (!EstaturaValida(textbox.Text))
+            {
+                MessageBox.Show("Ingrese un valor decimal valido para la estatura", "Estatura", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                //textbox.Clear();
+            }
 
         }
 
-        private bool EsEnteroValido (string valor)
+        private bool EsEnteroValido(string valor)
         {
             int resultado;
             return int.TryParse(valor, out resultado);
@@ -75,8 +119,13 @@ namespace _3OLIDTS_RodrigoNandayapa_04
 
         private bool EsEnteroValido10Digitos(string valor)
         {
-            long resultado;
-            return long.TryParse(valor, out resultado) && valor.Length == 10;
+            //long resultado;
+            //return long.TryParse(valor, out resultado) && valor.Length == 10
+
+            return valor.Length == 10 && valor.All(char.IsDigit) &&
+            long.TryParse(valor, out _);
+            //string formato = @"^\d{10}$";
+            //return Regex.IsMatch(valor, formato);
 
             //return false;
 
@@ -115,43 +164,50 @@ namespace _3OLIDTS_RodrigoNandayapa_04
 
             string genero = "";
 
-            if (rbFemenino.Checked)
+            if (rbMasculino.Checked)
             {
-                genero = "Femenino";
+                genero = "Hombre";
 
             }
-            else if (rbMasculino.Checked)
+            else if (rbFemenino.Checked)
             {
-                genero = "Masculino";
+                genero = "Mujer";
             }
-            string datos = $"Nombre: {nombre}\n\r Apellidos : {apellidos}\n\r" +
-                $" Telefono : {tel}\n\r Edad : {edad}\n\r " +
-                $"Estatura : {estatura}\n\r Genero : {genero}\n\r";
-
-           
-            string ruta = "C:\\Users\\rodri\\Downloads\\3OLIDTS.text";
-
-            bool archivoExiste = File.Exists(ruta);
-            using (StreamWriter writer = new StreamWriter(ruta, true))
+            if (!string.IsNullOrEmpty(tbApellidos.Text) && !string.IsNullOrEmpty(tbNombre.Text) && !string.IsNullOrEmpty(tbEdad.Text) && !string.IsNullOrEmpty(tbEstatura.Text) && !string.IsNullOrEmpty(tbTelefono.Text))
             {
-                if (archivoExiste)
+                string datos = $"Nombre:{nombre}\n\rApellidos:{apellidos}\n\r" +
+                    $"Telefono:{tel}\n\rEdad:{edad}\n\rEstatura:{estatura}\n\rGenero:{genero}\n\r";
+                //el \r es inicio de renglon
+                //MessageBox.Show(datos,"Valores ingresados", MessageBoxButtons.OK,MessageBoxIcon.Information);
+                string ruta = "C:\\Users\\rodri\\Downloads\\3OLIDTS2025.txt";
+                //string ruta = "C:/Users/rodri/Downloads/3OLIDTS2025.txt"; 
+                //string ruta = @"C:\Users\rodri\Downloads\3OLIDTS2025.txt";
+                bool archivoExiste = File.Exists(ruta);
+                using (StreamWriter writer = new StreamWriter(ruta, true))
                 {
-                    writer.WriteLine();
-
+                    if (archivoExiste)
+                    {
+                        writer.WriteLine();
+                    }
+                    writer.WriteLine(datos);
                 }
-                writer.WriteLine(datos);
+                MessageBox.Show(datos, "Valores ingresados",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show("Ingrese valores a los textBox", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
 
             }
-            MessageBox.Show(datos, "Valores ingresados", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
         }
 
+            private void btnCerrar_Click(object sender, EventArgs e)
+            {
+                this.Close();
+            }
 
-
-        private void btnCerrar_Click(object sender, EventArgs e)
-        {
-            this.Close();
         }
-
     }
-}
+
