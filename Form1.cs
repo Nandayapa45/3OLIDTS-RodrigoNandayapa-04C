@@ -9,11 +9,15 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO; //lIBRERIA PARA LECTURA Y ESCRITURA
 using System.Text.RegularExpressions; //Libreria para la validación de formato de texto
+using MySql.Data.MySqlClient; //libreria de conexión a MySql -Base de datos-
+
 
 namespace _3OLIDTS_RodrigoNandayapa_04
 {
     public partial class Form1 : Form
+
     {
+        string conectionSQL = "Server=localhost;port=3306;Database=formulario;Uid=root;Pwd=;";
         public Form1()
         {
             InitializeComponent();
@@ -24,6 +28,33 @@ namespace _3OLIDTS_RodrigoNandayapa_04
             tbEdad.TextChanged += validarEdad;
             tbTelefono.Leave += validarTelefono;
 
+        }
+        private void  insertarRegistro (string Nombre, string Apellidos, int Edad, decimal Estatura, string Telefono, string Genero) 
+        {
+            using (MySqlConnection conection = new MySqlConnection(conectionSQL))
+            {
+
+                conection.Open();
+
+                string insertQuery = "INSERT INTO usuario (Nombre, Apellidos,  Telefono, Estatura, Edad, Genero)" +
+                     "VALUES (@Nombre, @Apellidos, @Telefono, @Estatura, @Edad, @Genero)";
+                using (MySqlCommand command = new MySqlCommand(insertQuery, conection))
+                {
+                    command.Parameters.AddWithValue("@Nombre", Nombre);
+                    command.Parameters.AddWithValue("@Apellidos", Apellidos);
+                    command.Parameters.AddWithValue("@Telefono", Telefono);
+                    command.Parameters.AddWithValue("@Estatura", Estatura);
+                    command.Parameters.AddWithValue("@Edad", Edad);
+                    command.Parameters.AddWithValue("@Genero", Genero);
+
+                    command.ExecuteNonQuery();
+
+
+                }
+                conection.Close();
+            }
+        
+        
         }
         private void validarNombre(object sender, EventArgs e)
         {
@@ -126,11 +157,8 @@ namespace _3OLIDTS_RodrigoNandayapa_04
             long.TryParse(valor, out _);
             //string formato = @"^\d{10}$";
             //return Regex.IsMatch(valor, formato);
-
             //return false;
-
         }
-
 
         private bool EsTextoValido(string texto)
         {
@@ -158,7 +186,7 @@ namespace _3OLIDTS_RodrigoNandayapa_04
         {
             string nombre = tbNombre.Text;
             string apellidos = tbApellidos.Text;
-            string tel = tbTelefono.Text;
+            string telefono = tbTelefono.Text;
             string edad = tbEdad.Text;
             string estatura = tbEstatura.Text;
 
@@ -176,7 +204,7 @@ namespace _3OLIDTS_RodrigoNandayapa_04
             if (!string.IsNullOrEmpty(tbApellidos.Text) && !string.IsNullOrEmpty(tbNombre.Text) && !string.IsNullOrEmpty(tbEdad.Text) && !string.IsNullOrEmpty(tbEstatura.Text) && !string.IsNullOrEmpty(tbTelefono.Text))
             {
                 string datos = $"Nombre:{nombre}\n\rApellidos:{apellidos}\n\r" +
-                    $"Telefono:{tel}\n\rEdad:{edad}\n\rEstatura:{estatura}\n\rGenero:{genero}\n\r";
+                    $"Telefono:{telefono}\n\rEdad:{edad}\n\rEstatura:{estatura}\n\rGenero:{genero}\n\r";
                 //el \r es inicio de renglon
                 //MessageBox.Show(datos,"Valores ingresados", MessageBoxButtons.OK,MessageBoxIcon.Information);
                 string ruta = "C:\\Users\\rodri\\Downloads\\3OLIDTS2025.txt";
@@ -191,6 +219,8 @@ namespace _3OLIDTS_RodrigoNandayapa_04
                     }
                     writer.WriteLine(datos);
                 }
+                insertarRegistro(nombre, apellidos, int.Parse(edad), decimal.Parse(estatura), telefono, genero);
+
                 MessageBox.Show(datos, "Valores ingresados",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }

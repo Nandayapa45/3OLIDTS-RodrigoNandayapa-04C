@@ -218,7 +218,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::_3OLIDTS_RodrigoNandayapa_04.Properties.Resources.formulario_3;
-            this.ClientSize = new System.Drawing.Size(563, 789);
+            this.ClientSize = new System.Drawing.Size(563, 702);
             this.Controls.Add(this.btnCerrar);
             this.Controls.Add(this.btnCancelar);
             this.Controls.Add(this.btnGuardar);
